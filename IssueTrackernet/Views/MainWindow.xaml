@@ -1,0 +1,37 @@
+﻿<mah:MetroWindow 
+        xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls" 
+        x:Class="IssueTrackernet.Views.MainWindow"
+        xmlns:prism="http://prismlibrary.com/"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+         prism:ViewModelLocator.AutoWireViewModel="True" xmlns:it="http://schemas.microsoft.com/xaml/behaviors"
+        Title="MainWindow" Height="1080" Width="1920">
+    <it:Interaction.Triggers>
+        <it:EventTrigger EventName="Closing">
+            <it:InvokeCommandAction Command="{Binding OnClosingCommand}" />
+        </it:EventTrigger>
+    </it:Interaction.Triggers>
+    <Grid>
+        <ContentControl prism:RegionManager.RegionName="FilterRegion" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Margin="5"/>
+        <ContentControl prism:RegionManager.RegionName="ContentRegion" Margin="5"/>
+        <StackPanel Orientation="Horizontal" Margin="0,10,10,0" HorizontalAlignment="Right" VerticalAlignment="Top">
+            <Button Height="30" Width="30" Margin="0,0,10,0" Style="{StaticResource Button_FrameMenu}" ToolTip="Import" Command="{Binding ImportDataCommand}">
+                <Image Source="/Resource/Recipe_Load.png" Style="{StaticResource ImgBtn_W25H25}"/>
+            </Button>
+            <Button Height="30" Width="30" Margin="0,0,0,0" Style="{StaticResource Button_FrameMenu}" ToolTip="Save" Command="{Binding SaveDataCommand}">
+                <Image Source="/Resource/Save_Icon.png" Style="{StaticResource ImgBtn_W25H25}"/>
+            </Button>
+        </StackPanel>
+        <!--<TabControl HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="10,0,10,10">
+            <TabItem Header="Filters">
+                <FormUI:FilterList x:Name="FilterList" Margin="0" MouseLeave="FilterList_MouseLeave"/>
+            </TabItem>
+            <TabItem Header="Issue Form">
+                <FormUI:TicketInfo x:Name="IssueForm" Margin="0"/>
+            </TabItem>
+        </TabControl>-->
+    </Grid>
+</mah:MetroWindow>

@@ -1,0 +1,51 @@
+# Ignore Visual Studio files
+.vs/
+.vscode/
+*.suo
+*.user
+
+# Ignore NuGet packages
+packages/
+
+# Ignore bin and obj directories
+bin/
+obj/
+
+# Ignore .net core runtime files
+runtimes/
+
+# Ignore test results
+TestResults/
+
+# Ignore coverage files
+coverage/
+
+# Ignore ReSharper files
+*.ReSharper
+*.ReSharper.user
+
+# Ignore CodeAnalysis files
+*.CodeAnalysis
+*.CodeAnalysis.user
+
+# Ignore TeamCity files
+TeamCity/
+teamcity/
+
+# Ignore App.config files
+App.config
+
+# Ignore .vsix files
+*.vsix
+
+# Ignore .nupkg files
+*.nupkg
+
+# Ignore .dll files
+*.dll
+
+# Ignore .exe files
+*.exe
+
+# Ignore .pdb files
+*.pdb

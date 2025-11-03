@@ -1,0 +1,20 @@
+﻿<UserControl x:Class="IssuelistModule.Views.ColDisplaySet"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local1="clr-namespace:Utility;assembly=Utility"
+             mc:Ignorable="d" 
+             Height="400" Width="200">
+    <Border Style="{StaticResource MiniFrame}">
+        <ListBox ItemsSource="{Binding VisList}">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel>
+                        <CheckBox Content="{Binding Name}" IsChecked="{Binding Display}"/>
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </Border>
+</UserControl>

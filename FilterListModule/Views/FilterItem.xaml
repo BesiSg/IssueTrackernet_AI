@@ -1,0 +1,26 @@
+﻿<UserControl x:Class="FilterListModule.Views.FilterItem"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d" 
+             Height="275" Width="100">
+    <Border Style="{StaticResource MiniFrame}">
+        <StackPanel Margin="2">
+            <Label Content="{Binding LabelName}"/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button Content="○" Width="25" Height="25" Command="{Binding ClearAllCommand}" Style="{StaticResource BtnCommonRedText}" HorizontalAlignment="Left"/>
+                <Button Content="✔" Width="25" Height="25" Command="{Binding CheckAllCommand}" Style="{StaticResource BtnCommonLimeText}" Margin="5,0,0,0" HorizontalAlignment="Right"/>
+            </StackPanel>
+            <ListBox ItemsSource="{Binding Collection}" Width="auto" Height="269" Margin="0,2,0,0">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel>
+                            <CheckBox Content="{Binding Entry}" IsChecked="{Binding Selected}"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </StackPanel>
+    </Border>
+</UserControl>

@@ -1,0 +1,19 @@
+﻿<unity:PrismApplication  xmlns:unity="http://prismlibrary.com/" x:Class="IssueTrackernet.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:IssueTrackernet" xmlns:local1="clr-namespace:Utility;assembly=Utility">
+    <unity:PrismApplication.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!--<ResourceDictionary Source="pack://application:,,,/FormUI;component/Resource.xaml" />-->
+                <ResourceDictionary Source="/UIs;component/Resource.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Themes/Light.Blue.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <local1:DateToString x:Key="DateToString"/>
+            <local1:BooltoVis x:Key="BooltoVis"/>
+            <local1:stringtoBool x:Key="stringtoBool"/>
+        </ResourceDictionary>
+    </unity:PrismApplication.Resources>
+</unity:PrismApplication>

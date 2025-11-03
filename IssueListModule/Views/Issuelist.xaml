@@ -1,0 +1,159 @@
+<UserControl x:Class="IssuelistModule.Views.Issuelist"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:IssuelistModule="clr-namespace:IssuelistModule.Views"
+             mc:Ignorable="d"
+             xmlns:utility="clr-namespace:Utility;assembly=Utility" 
+             d:DesignHeight="450" d:DesignWidth="1910"
+             xmlns:prism="http://prismlibrary.com/" xmlns:it="http://schemas.microsoft.com/xaml/behaviors"
+             prism:ViewModelLocator.AutoWireViewModel="True">
+    <it:Interaction.Triggers>
+        <it:EventTrigger EventName="Loaded">
+            <it:InvokeCommandAction Command="{Binding OnloadedCommand}" />
+        </it:EventTrigger>
+    </it:Interaction.Triggers>
+    <UserControl.Resources>
+        <utility:BindingProxy x:Key="context" Data="{Binding}"/>
+        <utility:BindingProxy x:Key="vTSGSD" Data="{Binding ColDisp.vTSGSD.Display}"/>
+        <utility:BindingProxy x:Key="vSummary" Data="{Binding ColDisp.vSummary.Display}"/>
+        <utility:BindingProxy x:Key="vAssignee" Data="{Binding ColDisp.vAssignee.Display}"/>
+        <utility:BindingProxy x:Key="vStatus" Data="{Binding ColDisp.vStatus.Display}"/>
+        <utility:BindingProxy x:Key="vResolution" Data="{Binding ColDisp.vResolution.Display}"/>
+        <utility:BindingProxy x:Key="vCreated" Data="{Binding ColDisp.vCreated.Display}"/>
+        <utility:BindingProxy x:Key="vUpdated" Data="{Binding ColDisp.vUpdated.Display}"/>
+        <utility:BindingProxy x:Key="vPkgDepartment" Data="{Binding ColDisp.vPkgDepartment.Display}"/>
+        <utility:BindingProxy x:Key="vSite" Data="{Binding ColDisp.vSite.Display}"/>
+        <utility:BindingProxy x:Key="vMachineCustomer" Data="{Binding ColDisp.vMachineCustomer.Display}"/>
+        <utility:BindingProxy x:Key="vMachineProductLine" Data="{Binding ColDisp.vMachineProductLine.Display}"/>
+        <utility:BindingProxy x:Key="vProject" Data="{Binding ColDisp.vProject.Display}"/>
+        <utility:BindingProxy x:Key="vRemark" Data="{Binding ColDisp.vRemark.Display}"/>
+        <utility:BindingProxy x:Key="vDifficulty" Data="{Binding ColDisp.vDifficulty.Display}"/>
+        <utility:BindingProxy x:Key="vHandledBy" Data="{Binding ColDisp.vHandledBy.Display}"/>
+        <utility:BindingProxy x:Key="vNextAction" Data="{Binding ColDisp.vNextAction.Display}"/>
+        <utility:BindingProxy x:Key="vInvestigation" Data="{Binding ColDisp.vInvestigation.Display}"/>
+        <utility:BindingProxy x:Key="vHotPriority" Data="{Binding ColDisp.vHotPriority.Display}"/>
+        <utility:BindingProxy x:Key="vComments" Data="{Binding ColDisp.vComments.Display}"/>
+        <utility:BindingProxy x:Key="vSummarizedStatus" Data="{Binding ColDisp.vSummarizedStatus.Display}"/>
+    </UserControl.Resources>
+    <StackPanel>
+        <StackPanel Orientation="Horizontal" Margin="0,0,0,0" >
+            <Label Style="{StaticResource LB_ItemContent}" Content="Data Path" Width="70"/>
+            <TextBox Height="25" Margin="10" Text="{Binding PathCfg.DataPath}" Width="600"/>
+            <Button Height="25" Width="60" Content="Open" Command="{Binding PathCfg.LoadDataSet}" Style="{StaticResource Button_FrameMenu}"/>
+            <Button Height="25" Width="60" Content="Save As" Command="{Binding PathCfg.SaveDataSet}" Style="{StaticResource Button_FrameMenu}" Margin="5,0,0,0"/>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal">
+            <StackPanel Name="PersonalAccessToken" HorizontalAlignment="Left" Orientation="Horizontal" Margin="0,10,0,10">
+                <Label Style="{StaticResource LB_ItemContent}" Content="PAT" Width="70"/>
+                <TextBox Height="25" Margin="10,0,0,0" Text="{Binding DatasetCfg.Get.PersonalAccessToken}" Width="400"/>
+            </StackPanel>
+            <StackPanel Name="Prio" HorizontalAlignment="Left" Orientation="Horizontal" Margin="30,10,0,10">
+                <Label Content="TopPrio" Width="60"/>
+                <TextBox Height="25" Margin="10,0,10,0" Text="{Binding DatasetCfg.Get.PriorityList}" Width="900" />
+                <Button Height="25" Width="60" Content="SetPrio" Command="{Binding PriorityChangedCommand}" Style="{StaticResource Button_FrameMenu}" Margin="5,0,0,0"/>
+            </StackPanel>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+            <StackPanel Name="IssueCount" HorizontalAlignment="Right" Orientation="Horizontal">
+                <Label Margin="0,0,0,0" Style="{StaticResource LB_ItemContent}" Content="Issue Cnt" Width="70"/>
+                <Label Margin="10,0,0,0"  Content="{Binding IssueCounter}" Style="{StaticResource LB_ItemData_Center}" Width="100"/>
+            </StackPanel>
+            <StackPanel Name="LastUpdate" HorizontalAlignment="Right" Orientation="Horizontal">
+                <Label Margin="40,0,0,0" Style="{StaticResource LB_ItemContent}" Content="Last Update" Width="80"/>
+                <Label Margin="10,0,0,0"  Content="{Binding DatasetCfg.Get.LastUpdateDate}" Style="{StaticResource LB_ItemData_Center}" Width="150"/>
+            </StackPanel>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal">
+            <DataGrid x:Name="IssueListDG" Background="LightGray" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible" ItemsSource="{Binding Collection}" CanUserDeleteRows="False"
+                                AutoGenerateColumns="False" CanUserAddRows="False" SelectionUnit="FullRow" EnableRowVirtualization="True" GridLinesVisibility="All" 
+                                ColumnHeaderHeight="30"  Height="400" Width="1690" RowHeight="25">
+                <it:Interaction.Triggers>
+                    <it:EventTrigger EventName="SelectionChanged">
+                        <it:InvokeCommandAction Command="{Binding SelectedItemChangedCommand}"  CommandParameter="{Binding ElementName=IssueListDG, Path=SelectedItem}"/>
+                    </it:EventTrigger>
+                </it:Interaction.Triggers>
+                <DataGrid.Resources>
+
+                </DataGrid.Resources>
+                <DataGrid.Columns>
+                    <DataGridTemplateColumn Visibility="{Binding Data.ColDisp.vKey.Display, Source={StaticResource context}, Converter={StaticResource BooltoVis},UpdateSourceTrigger=PropertyChanged}" Header="Key" CanUserSort="True" CanUserResize="True" CanUserReorder="False">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock>
+                             <Hyperlink NavigateUri="{Binding Key.Uri}">
+                                  <it:Interaction.Triggers>
+                                      <it:EventTrigger EventName="RequestNavigate">
+                                          <it:InvokeCommandAction Command="{Binding RequestedNavigateCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Hyperlink}}, Path=NavigateUri}"/>
+                                      </it:EventTrigger>
+                                  </it:Interaction.Triggers>
+                                  <TextBlock Text="{Binding Key.Value}"/>
+                             </Hyperlink>
+                      </TextBlock>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Visibility="{Binding Data.ColDisp.vSummary.Display, Source={StaticResource context}, Converter={StaticResource BooltoVis},UpdateSourceTrigger=PropertyChanged}" Header="Summary" IsReadOnly="True" CanUserSort="True" CanUserResize="True" CanUserReorder="False">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock>
+                             <Hyperlink NavigateUri="{Binding Summary.Uri}">
+                                  <it:Interaction.Triggers>
+                                      <it:EventTrigger EventName="RequestNavigate">
+                                          <it:InvokeCommandAction Command="{Binding RequestedNavigateCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Hyperlink}}, Path=NavigateUri}"/>
+                                      </it:EventTrigger>
+                                  </it:Interaction.Triggers>
+                                 <TextBlock Text="{Binding Summary.Value}"/>
+                             </Hyperlink>
+                      </TextBlock>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTextColumn Visibility="{Binding Data.ColDisp.vTSGSD.Display, Source={StaticResource context},Converter={StaticResource BooltoVis}}" Header="TSGSD" Binding="{Binding TSGSD}" IsReadOnly="True" Width="500" TextBlock.TextAlignment="Left" CanUserSort="True" CanUserResize="True" CanUserReorder="False" />
+                    <DataGridTextColumn Visibility="{Binding Data.ColDisp.vMachineCustomer.Display, Source={StaticResource context},Converter={StaticResource BooltoVis}}" Header="Machine Customer" Binding="{Binding MachineCustomer}" IsReadOnly="True" Width="120" TextBlock.TextAlignment="Left"  CanUserSort="True" CanUserResize="True" CanUserReorder="False"/>
+                    <DataGridTextColumn Visibility="{Binding Data.ColDisp.vAssignee.Display, Source={StaticResource context},Converter={StaticResource BooltoVis}}" Header="Assignee" Binding="{Binding Assignee}" IsReadOnly="True" Width="80" TextBlock.TextAlignment="Left" CanUserSort="True" CanUserResize="True" CanUserReorder="False" />
+                    <DataGridTextColumn Visibility="{Binding Data.ColDisp.vStatus.Display, Source={StaticResource context},Converter={StaticResource BooltoVis}}" Header="Status" Binding="{Binding Status}" IsReadOnly="True" Width="80" TextBlock.TextAlignment="Left"  CanUserSort="True" CanUserResize="True" CanUserReorder="False"/>
+                    <DataGridTextColumn Visibility="{Binding Data.ColDisp.vResolution.Display, Source={StaticResource context},Converter={StaticResource BooltoVis}}" Header="Resolution" Binding="{Binding Resolution}" IsReadOnly="True" Width="80" TextBlock.TextAlignment="Left" CanUserSort="True" CanUserResize="True" CanUserReorder="False"/>
+                    <DataGridTextColumn Visibility="{Binding Data.ColDisp.vCreated.Display, Source={StaticResource context},Converter={StaticResource BooltoVis}}" Header="Created" Binding="{Binding Path=Created, Converter={StaticResource DateToString}}" IsReadOnly="True" Width="80" TextBlock.TextAlignment="Left" CanUserSort="True" CanUserResize="True" CanUserReorder="False" />
+                    <DataGridTextColumn Visibility="{Binding Data.ColDisp.vUpdated.Display, Source={StaticResource context},Converter={StaticResource BooltoVis}}" Header="Updated" Binding="{Binding Path=Updated, Converter={StaticResource DateToString}}" IsReadOnly="True" Width="80" TextBlock.TextAlignment="Left"  CanUserSort="True" CanUserResize="True" CanUserReorder="False"/>
+                    <DataGridTextColumn Visibility="{Binding Data.ColDisp.vPkgDepartment.Display, Source={StaticResource context},Converter={StaticResource BooltoVis}}" Header="Pkg Department" Binding="{Binding PkgDepartment}" IsReadOnly="True" Width="70" TextBlock.TextAlignment="Left"  CanUserSort="True" CanUserResize="True" CanUserReorder="False"/>
+                    <DataGridTextColumn Visibility="{Binding Data.ColDisp.vSite.Display, Source={StaticResource context},Converter={StaticResource BooltoVis}}" Header="Site" Binding="{Binding Site}" IsReadOnly="True" Width="70" TextBlock.TextAlignment="Left" CanUserSort="True" CanUserResize="True" CanUserReorder="False"/>
+                    <DataGridTextColumn Visibility="{Binding Data.ColDisp.vMachineProductLine.Display, Source={StaticResource context},Converter={StaticResource BooltoVis}}" Header="MachineProductLine" Binding="{Binding MachineProductLine}" IsReadOnly="True" Width="70" TextBlock.TextAlignment="Left" CanUserSort="True" CanUserResize="True" CanUserReorder="False"/>
+                    <DataGridTextColumn Visibility="{Binding Data.ColDisp.vProject.Display, Source={StaticResource context},Converter={StaticResource BooltoVis}}" Header="Project" Binding="{Binding Project}" IsReadOnly="True" Width="70" TextBlock.TextAlignment="Left" CanUserSort="True" CanUserResize="False" CanUserReorder="False"/>
+                    <DataGridTextColumn Visibility="{Binding Data.ColDisp.vRemark.Display, Source={StaticResource context},Converter={StaticResource BooltoVis}}" Header="Remark" Binding="{Binding Remark}" Width="240" CanUserSort="True" CanUserResize="True" CanUserReorder="False"/>
+                    <DataGridComboBoxColumn Visibility="{Binding Data.ColDisp.vDifficulty.Display, Source={StaticResource context},Converter={StaticResource BooltoVis}}" x:Name="DiffCB" Header="Difficulty" SelectedValueBinding="{Binding Difficulty}" Width="100" CanUserSort="True" CanUserResize="True" CanUserReorder="False"/>
+                    <DataGridComboBoxColumn Visibility="{Binding Data.ColDisp.vHandledBy.Display, Source={StaticResource context},Converter={StaticResource BooltoVis}}" x:Name="HandledCB" Header="HandledBy" SelectedValueBinding="{Binding HandledBy}" Width="100" CanUserSort="True" CanUserResize="True" CanUserReorder="False"/>
+                    <DataGridComboBoxColumn Visibility="{Binding Data.ColDisp.vNextAction.Display, Source={StaticResource context},Converter={StaticResource BooltoVis}}" x:Name="NextActionCB" Header="NextAction" SelectedValueBinding="{Binding NextAction}" Width="100" CanUserSort="True" CanUserResize="True" CanUserReorder="False"/>
+                    <DataGridTemplateColumn Visibility="{Binding Data.ColDisp.vInvestigation.Display, Source={StaticResource context},Converter={StaticResource BooltoVis}}" x:Name="Investigation" Header="Investigation" CanUserSort="True" CanUserResize="True" CanUserReorder="False">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock>
+                             <Hyperlink NavigateUri="{Binding Investigation}">
+                                  <it:Interaction.Triggers>
+                                      <it:EventTrigger EventName="RequestNavigate">
+                                          <it:InvokeCommandAction Command="{Binding RequestedNavigateCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Hyperlink}}, Path=NavigateUri}"/>
+                                      </it:EventTrigger>
+                                  </it:Interaction.Triggers>
+                                 <TextBlock Text="{Binding Investigation}"/>
+                             </Hyperlink>
+                      </TextBlock>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <!--<DataGridTemplateColumn Header="Priority" Visibility="{Binding Data, Source={StaticResource vPriority}, Converter={StaticResource BooltoVis}}" Width="100" CanUserSort="True" CanUserResize="True" CanUserReorder="False">
+              <DataGridTemplateColumn.CellTemplate>
+                  <DataTemplate>
+                      <CheckBox HorizontalAlignment="Center" IsChecked="{Binding Priority, Converter={StaticResource stringtoBool}}" />
+                  </DataTemplate>
+              </DataGridTemplateColumn.CellTemplate>
+          </DataGridTemplateColumn>-->
+                    <DataGridTextColumn Visibility="{Binding Data.ColDisp.vComments.Display, Source={StaticResource context},Converter={StaticResource BooltoVis}}" Header="Comments" Binding="{Binding Comments}" IsReadOnly="True" Width="240" CanUserSort="True" CanUserResize="True" CanUserReorder="False"/>
+                    <DataGridTextColumn Visibility="{Binding Data.ColDisp.vSummarizedStatus.Display, Source={StaticResource context},Converter={StaticResource BooltoVis}}" Header="SummarizedStatus" Binding="{Binding SummarizedStatus}" IsReadOnly="True" Width="240" CanUserSort="True" CanUserResize="True" CanUserReorder="False"/>
+                    <DataGridCheckBoxColumn Header="HotPriority" Visibility="{Binding Data.ColDisp.vHotPriority.Display, Source={StaticResource context}, Converter={StaticResource BooltoVis}}" Width="100" CanUserSort="True" CanUserResize="True" Binding="{Binding HotPriority, Converter={StaticResource stringtoBool}}" CanUserReorder="False"/>
+                </DataGrid.Columns>
+            </DataGrid>
+            <IssuelistModule:ColDisplaySet></IssuelistModule:ColDisplaySet>
+        </StackPanel>
+    </StackPanel>
+</UserControl>
