@@ -23,7 +23,7 @@
         public NameBoolPair vHotPriority { get; set; } = new NameBoolPair() { Name = "vHotPriority" };
         public NameBoolPair vComments { get; set; } = new NameBoolPair() { Name = "vComments" };
         public NameBoolPair vSummarizedStatus { get; set; } = new NameBoolPair() { Name = "vSummarizedStatus" };
-        
+
         public void Copy(ColumnDisplay source)
         {
             var Properties = source.GetType().GetProperties();

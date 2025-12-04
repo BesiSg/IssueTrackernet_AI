@@ -237,7 +237,7 @@
         <Setter Property ="HorizontalAlignment"  Value="Right"/>
     </Style>
     <Style x:Key="TB_ItemContent_Left" TargetType="TextBlock" BasedOn="{StaticResource TB_ItemContent}">
-        <Setter Property="Padding" Value="5,0,0,0"/>
+        <Setter Property="Padding" Value="5,0,5,0"/>
         <Setter Property ="HorizontalAlignment"  Value="Left"/>
     </Style>
     <Style x:Key="TB_ItemContent_Center" TargetType="TextBlock" BasedOn="{StaticResource TB_ItemContent}">

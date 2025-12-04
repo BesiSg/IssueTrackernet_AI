@@ -145,7 +145,7 @@ namespace Utility.Lib.Ticket
             var Properties = source.GetType().GetProperties();
             foreach (var property in Properties)
             {
-                if (property.GetCustomAttribute<TextAttribute>()?.Updatable==true)
+                if (property.GetCustomAttribute<TextAttribute>()?.Updatable == true)
                     property.SetValue(this, property.GetValue(source));
             }
         }

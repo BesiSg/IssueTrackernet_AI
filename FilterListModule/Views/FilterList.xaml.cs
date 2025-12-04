@@ -1,8 +1,6 @@
 ﻿using FilterListModule.ViewModels;
-using Handlers;
 using System.Windows;
 using System.Windows.Controls;
-using Utility.Lib.Filter;
 
 namespace FilterListModule.Views
 {
@@ -26,17 +24,17 @@ namespace FilterListModule.Views
         private void BindFilters()
         {
             this.Filteritemcontainer.Children.Clear();
-            var count = (this.DataContext as FilterListViewModel).Filters.Filter.Count;
+            var count = (this.DataContext as FilterListViewModel).Filters.Data.Count;
             var Gaps = (count * 10) + 20;
             var AllowedWidthforFilters = this.Width - Gaps;
             var Widthperfilter = AllowedWidthforFilters / count;
-            foreach (var filter in (this.DataContext as FilterListViewModel).Filters.Filter)
+            foreach (var filter in (this.DataContext as FilterListViewModel).Filters.Data)
             {
                 var usercontrol = new FilterItem();
                 usercontrol.Margin = new Thickness(5, 0, 5, 0);
                 usercontrol.Name = filter.Key;
                 usercontrol.Width = Widthperfilter;
-                usercontrol.DataContext = filter.Value;
+                usercontrol.DataContext = new FilterItemViewModel((this.DataContext as FilterListViewModel)._settinghandlerfilters, filter.Value);
                 this.Filteritemcontainer.Children.Add(usercontrol);
             }
         }

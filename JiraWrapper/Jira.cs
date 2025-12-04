@@ -1,6 +1,5 @@
 ﻿using Atlassian.Jira;
 using RestSharp;
-using HtmlAgilityPack;
 using Utility;
 
 namespace JiraWrapper
@@ -67,7 +66,7 @@ namespace JiraWrapper
             {
                 var orga = comment.AuthorUser.DisplayName.Contains('@') ? comment.AuthorUser.DisplayName.Split('@')[0] : "Besi";
                 var text = comment.Body.GetBeautifulSoup();
-                summary += $"\n-----\nComment from {comment.AuthorUser.DisplayName} of {orga}: {text}";
+                summary += $"\n-----\nComment from {comment.AuthorUser.DisplayName} of {orga} at {comment.CreatedDate}: {text}";
             }
             return summary;
         }

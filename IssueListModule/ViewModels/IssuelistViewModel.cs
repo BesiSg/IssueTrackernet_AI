@@ -1,11 +1,10 @@
 ﻿using Handlers;
 using Handlers.EventAggregator;
 using System.Collections.ObjectModel;
-using System.IO;
-using System.Text;
 using System.Timers;
 using System.Windows;
 using Utility;
+using Utility.EventAggregator;
 using Utility.Lib.ColumnDisplay;
 using Utility.Lib.Filter;
 using Utility.Lib.PathConfig;
@@ -16,60 +15,60 @@ namespace IssuelistModule.ViewModels
 {
     public class IssuelistViewModel : BaseUtility
     {
-        string StartupPath = AppDomain.CurrentDomain.BaseDirectory;
-        string PathConfig_Filename = "Data\\Path.xml";
-        string FilterConfig_Filename = "Data\\Filter.xml";
-        string PathConfig_Path;
-        string FilterConfig_Path;
         IEventAggregator _ea;
-        public DelegateCommand<TicketInfo> SelectedItemChangedCommand { get; private set; }
-        public DelegateCommand<string> PriorityChangedCommand { get; private set; }
+        public ObservableCollection<TicketInfo> Data
+        {
+            get => GetValue(() => Data);
+            set => SetValue(() => Data, value);
+        }
+        private List<TicketInfo> _Data = new List<TicketInfo>();
+        public DelegateCommand PriorityChangedCommand { get; private set; }
         public DelegateCommand OnloadedCommand { get; private set; }
-        public SettingHandler<PathConfig> PathCfgHandler { get; set; }
-        public SettingHandler<Filters> FilterCfgHandler { get; set; }
-        public SettingHandler<Dataset> DatasetCfgHandler { get; set; }
+        public DelegateCommand LoadDataSet { get; private set; }
+        public DelegateCommand SaveDataSet { get; private set; }
+        private SettingHandler<PathConfig> pathcfgHandler;
+        private SettingHandler<Filters> filtercfgHandler;
+        private SettingHandler<Dataset> datasetcfgHandler;
+        private SettingHandler<AIDataset> aidatasetHandler;
+        private DataSetHandler dataSetHandler;
+        public PathConfig PathCfg => pathcfgHandler.Get;
+        public Filters Filtercfg => filtercfgHandler.Get;
+        public Dataset Datasetcfg => datasetcfgHandler.Get;
+        public AIDataset Aidataset => aidatasetHandler.Get;
 
-        public IssuelistViewModel(IEventAggregator ea, SettingHandler<PathConfig> pathcfg, SettingHandler<Filters> filtercfg, SettingHandler<Dataset> datasetcfg  )
+        public TicketInfo Selected
+        {
+            get => this.GetValue(() => this.Selected);
+            set
+            {
+                if (Selected == null && value == null) return;
+                if (Selected?.Equals(value) == true) return;
+                this.SetValue(() => this.Selected, value);
+                _ea.GetEvent<IssueSelectionChange>().Publish(Selected);
+            }
+        }
+
+        public IssuelistViewModel(IEventAggregator ea, SettingHandler<PathConfig> pathcfg, SettingHandler<Filters> filtercfg, SettingHandler<Dataset> datasetcfg, SettingHandler<AIDataset> aiDatasetHandler, DataSetHandler setHandler)
         {
             _ea = ea;
-            this.PathConfig_Path = Path.Combine(StartupPath, PathConfig_Filename);
-            this.FilterConfig_Path = Path.Combine(StartupPath, FilterConfig_Filename);
-
-            this.PathCfgHandler = pathcfg;
-            this.FilterCfgHandler = filtercfg;
-            this.DatasetCfgHandler = datasetcfg;
-
-            this.PathCfgHandler.SetPathnLoad(PathConfig_Path);
-            this.FilterCfgHandler.SetPathnLoad(FilterConfig_Path);
-            this.DatasetCfgHandler.SetPathnLoad(this.PathCfg.DataPath);
-            this.DatasetCfg = new DataSetHandler(this.DatasetCfgHandler.Get);
-            this.UpdateVisList();
-            this.LinkFilterDataset();
-            this.PathCfgHandler.SettingLoaded += PathCfgHandler_SettingLoaded;
-            this.PathCfg.LoadPathChanged += PathCfgHandler_SettingLoaded;
-            this.PathCfg.SavePathChanged += PathCfgHandler_SettingSaved;
-            this.DatasetCfgHandler.SettingLoaded += DatasetCfgHandler_SettingLoaded;
-            this.FilterCfgHandler.SettingLoaded += FilterCfgHandler_SettingLoaded;
-            this.DatasetCfg.DatasetChanged += DatasetCfg_DatasetChanged;
-            this.FilterCfg.SelectionChange += FilterCfg_SelectionChange;
+            this.pathcfgHandler = pathcfg;
+            this.filtercfgHandler = filtercfg;
+            this.datasetcfgHandler = datasetcfg;
+            this.aidatasetHandler = aiDatasetHandler;
+            this.dataSetHandler = setHandler;
+            Data = new ObservableCollection<TicketInfo>();
+            this.datasetcfgHandler.SettingLoaded += DatasetCfgHandler_SettingLoaded;
+            this.filtercfgHandler.SettingLoaded += FilterCfgHandler_SettingLoaded;
+            Filtercfg.SelectionChange += Filtercfg_SelectionChange;
             this.FilterDataSetToUI().Wait();
 
-            SelectedItemChangedCommand = new DelegateCommand<TicketInfo>((selectedItem) =>
-            {
-                _ea.GetEvent<IssueSelectionChange>().Publish(selectedItem);
-            });
-            PriorityChangedCommand = new DelegateCommand<string>((priorities) =>
-            {
-                this.DatasetCfg.SetPrio();
-            });
-            OnloadedCommand = new DelegateCommand(() =>
-            {
-                this.FiltersUpdated();
-            });
+            PriorityChangedCommand = new DelegateCommand(() => this.dataSetHandler.SetPrio());
+            _ea.GetEvent<IssuesListChanged>().Subscribe(GetUpdatedList);
         }
+
         bool FilterChanged = false;
         System.Timers.Timer RefreshUITimer = null;
-        private void FilterCfg_SelectionChange(object sender, FilterItem e)
+        private void Filtercfg_SelectionChange(object? sender, FilterItem e)
         {
             this.FilterChanged = true;
             if (this.RefreshUITimer != null)
@@ -77,6 +76,11 @@ namespace IssuelistModule.ViewModels
                 this.TerminateTimer();
             }
             this.InitialiseTimer();
+        }
+
+        private async void GetUpdatedList(List<TicketInfo> list)
+        {
+            await FilterDataSetToUI();
         }
 
         private void TerminateTimer()
@@ -99,13 +103,11 @@ namespace IssuelistModule.ViewModels
 
         private void FilterCfgHandler_SettingLoaded(object sender, EventArgs e)
         {
-            this.LinkFilterDataset();
         }
 
         private void DatasetCfgHandler_SettingLoaded(object sender, EventArgs e)
         {
-            this.DatasetCfg.DatasetChanged += DatasetCfg_DatasetChanged;
-            this.LinkFilterDataset();
+            this.dataSetHandler.DatasetChanged += DatasetCfg_DatasetChanged;
             this.FilterDataSetToUI().Wait();
         }
 
@@ -114,109 +116,58 @@ namespace IssuelistModule.ViewModels
             this.FilterDataSetToUI().Wait();
         }
 
-        private void PathCfgHandler_SettingSaved(object sender, EventArgs e)
-        {
-            this.DatasetCfgHandler.SetPathnSave(this.PathCfg.DataPath);
-        }
-
-        private void PathCfgHandler_SettingLoaded(object sender, EventArgs e)
-        {
-            this.DatasetCfgHandler.SetPathnLoad(this.PathCfg.DataPath);
-            this.UpdateVisList();
-            this.NeedRebind?.Invoke(this, null);
-        }
-
-        private void FiltersUpdated()
-        {
-            _ea.GetEvent<FiltersChanged>().Publish(FilterCfg);
-        }
-        public void Save()
-        {
-            this.PathCfgHandler.Save();
-            this.FilterCfgHandler.Save();
-            this.DatasetCfgHandler.Save();
-        }
-
-        public void UpdateListIfFilterChange()
+        private void UpdateListIfFilterChange()
         {
             if (!this.FilterChanged) return;
             this.FilterDataSetToUI().Wait();
             this.FilterChanged = false;
         }
 
-        public event EventHandler NeedRebind;
-        public DataSetHandler DatasetCfg { get; private set; }
-        private List<TicketInfo> _Collection = new List<TicketInfo>();
-        public ObservableCollection<TicketInfo> Collection { get; private set; } = new ObservableCollection<TicketInfo>();
-        public ObservableCollection<NameBoolPair> VisList { get; private set; } = new ObservableCollection<NameBoolPair>();
-        public Filters FilterCfg => this.FilterCfgHandler.Get;
-        public PathConfig PathCfg => this.PathCfgHandler.Get;
-        public ColumnDisplay ColDisp => this.PathCfgHandler.Get.ColDisplay;
+        public ColumnDisplay ColDisp => this.pathcfgHandler.Get.ColDisplay;
         public int IssueCounter
         {
             get => this.GetValue(() => this.IssueCounter);
             set => this.SetValue(() => this.IssueCounter, value);
         }
-        private void UpdateCollection()
-        {
-            Application.Current.Dispatcher.BeginInvoke((Action)delegate // <--- HERE
-            {
-                this.Collection.Clear();
-                this.Collection.AddRange(this._Collection);
-                this.IssueCounter = this._Collection.Count;
-            });
-        }
-        private void UpdateVisList()
-        {
-            Application.Current.Dispatcher.BeginInvoke((Action)delegate // <--- HERE
-            {
-                this.VisList.Clear();
-                this.VisList.AddRange(this.PathCfg.GetVisList());
-            });
-        }
-        private void LinkFilterDataset()
-        {
-            this.FilterCfg.SetDataset(this.DatasetCfgHandler.Get);
-        }
         private void Clear()
         {
-            this._Collection.Clear();
-        }
-        private Task<ErrorResult> Add(IEnumerable<TicketInfo> source)
-        {
-            return Task.Run(() =>
+            lock (_Data)
             {
-                ClearErrorFlags();
-                try
-                {
-                    if (source == null) return Result;
-                    this._Collection.AddRange(source);
-                }
-                catch (Exception ex)
-                {
-                    CatchException(ex);
-                }
-                return Result;
-            });
+                this._Data.Clear();
+            }
         }
-        private Task<ErrorResult> Remove(IEnumerable<TicketInfo> source)
+        private void Add(IEnumerable<TicketInfo> source)
         {
-            return Task.Run(() =>
+            ClearErrorFlags();
+            try
             {
-                ClearErrorFlags();
-                try
+                if (source == null) return;
+                lock (_Data)
                 {
-                    source.ToList().ForEach(x => this._Collection.Remove(x));
+                    this._Data.AddRange(source);
                 }
-                catch (Exception ex)
+            }
+            catch (Exception ex)
+            {
+                CatchException(ex);
+            }
+        }
+        private void Remove(IEnumerable<TicketInfo> source)
+        {
+            try
+            {
+                lock (_Data)
                 {
-                    CatchException(ex);
+                    source.ToList().ForEach(x => this._Data.Remove(x));
                 }
-                return Result;
-            });
+            }
+            catch (Exception ex)
+            {
+                CatchException(ex);
+            }
         }
 
-        public Task<ErrorResult> FilterDataSetToUI()
+        private Task<ErrorResult> FilterDataSetToUI()
         {
             return Task.Run(() =>
             {
@@ -224,11 +175,11 @@ namespace IssuelistModule.ViewModels
                 try
                 {
                     this.Clear();
-                    var Task1 = this.FilterCfg.UpdateFilternGetListtoRemove();
-                    var Task2 = this.Add(this.DatasetCfg.GetTicketInfos());
-                    Task.WaitAll(Task1, Task2);
-                    this.Remove(Task1.Result.Result).Wait();
-                    this.UpdateCollection();
+                    var Task1 = this.Filtercfg.UpdateFilternGetListtoRemove();
+                    this.Add(this.dataSetHandler.Get.GetValues());
+                    Task.WaitAll(Task1);
+                    this.Remove(Task1.Result.Result);
+                    UpdateCollection();
                     this.FilterChanged = false;
                 }
                 catch (Exception ex)
@@ -236,6 +187,15 @@ namespace IssuelistModule.ViewModels
                     CatchException(ex);
                 }
                 return Result;
+            });
+        }
+        private void UpdateCollection()
+        {
+            Application.Current.Dispatcher.BeginInvoke((Action)delegate // <--- HERE
+            {
+                this.Data.Clear();
+                this.Data.AddRange(this._Data);
+                this.IssueCounter = this.Data.Count;
             });
         }
     }

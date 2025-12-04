@@ -10,7 +10,10 @@ namespace Handlers
     public class DataSetHandler : BaseUtility
     {
         private Dataset dataset;
-        public DataSetHandler(Dataset dataset)
+        public DataSetHandler()
+        {
+        }
+        public void SetData(Dataset dataset)
         {
             this.dataset = dataset;
         }
@@ -37,7 +40,7 @@ namespace Handlers
         }
         public void Clear()
         {
-            this.dataset.Issues.Clear();
+            this.dataset.Clear();
             this.DatasetChanged?.Invoke(this, null);
         }
         private Task<ErrorResult> UpdatePriority(List<string> source)
@@ -47,11 +50,11 @@ namespace Handlers
                 ClearErrorFlags();
                 try
                 {
-                    lock (this.dataset.Issues)
+                    lock (this.dataset.Data)
                     {
                         if (source.Count == 0) return Result;
-                        this.dataset.Issues.Values.Where(x => source.Contains(x.Summary?.Value?.ToLower())).ToList().ForEach(x => x.HotPriority = "True");
-                        this.dataset.Issues.Values.Where(x => !source.Contains(x.Summary?.Value?.ToLower())).ToList().ForEach(x => x.HotPriority = "False");
+                        this.dataset.GetValues().Where(x => source.Contains(x.Summary?.Value?.ToLower())).ToList().ForEach(x => x.HotPriority = "True");
+                        this.dataset.GetValues().Where(x => !source.Contains(x.Summary?.Value?.ToLower())).ToList().ForEach(x => x.HotPriority = "False");
                     }
                 }
                 catch (Exception ex)
@@ -68,13 +71,13 @@ namespace Handlers
                 ClearErrorFlags();
                 try
                 {
-                    lock (this.dataset.Issues)
+                    lock (this.dataset.Data)
                     {
                         if (source?.Key == null) return Result;
-                        if (this.dataset.Issues.ContainsKey(source.Key.Value))
-                            this.dataset.Issues[source.Key.Value].UpdateStatus(source);
+                        if (this.dataset.ContainsKey(source.Key.Value))
+                            this.dataset[source.Key.Value].UpdateStatus(source);
                         else
-                            this.dataset.Issues[source.Key.Value] = source;
+                            this.dataset[source.Key.Value] = source;
                     }
                 }
                 catch (Exception ex)
@@ -107,10 +110,6 @@ namespace Handlers
                 return Result;
             });
         }
-        public IEnumerable<TicketInfo> GetTicketInfos()
-        {
-            return this.dataset.Issues?.Values;
-        }
         public Task<ErrorResult> UpdatefromJira()
         {
             return Task.Run(() =>
@@ -121,7 +120,7 @@ namespace Handlers
                     if (_jiraHandler == null) _jiraHandler = new JIRA(dataset.PersonalAccessToken);
                     var issues = _jiraHandler.GetIssues(JiraWrapper.Project.All, dataset.LastUpdateDate);
                     var issuelist = new List<TicketInfo>();
-                    var listoftasks= new List<Task<ErrorResult>>();
+                    var listoftasks = new List<Task<ErrorResult>>();
                     foreach (var issue in issues)
                     {
                         listoftasks.Add(FetchingofProperties(issue));

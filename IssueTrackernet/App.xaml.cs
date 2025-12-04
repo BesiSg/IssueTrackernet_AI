@@ -1,5 +1,4 @@
 ﻿using Handlers;
-using IssuelistModule.ViewModels;
 using IssueTrackernet.Views;
 using System.Windows;
 using Utility.Lib.PathConfig;
@@ -25,13 +24,15 @@ namespace IssueTrackernet
             containerRegistry.RegisterSingleton<SettingHandler<PathConfig>>();
             containerRegistry.RegisterSingleton<SettingHandler<Filters>>();
             containerRegistry.RegisterSingleton<SettingHandler<Dataset>>();
-            containerRegistry.RegisterSingleton<IssuelistViewModel>();
+            containerRegistry.RegisterSingleton<SettingHandler<AIDataset>>();
+            containerRegistry.RegisterSingleton<DataSetHandler>();
         }
 
         protected override void ConfigureModuleCatalog(IModuleCatalog moduleCatalog)
         {
             moduleCatalog.AddModule<IssuelistModule.IssuelistModule>();
             moduleCatalog.AddModule<FilterListModule.FilterListModule>();
+            moduleCatalog.AddModule<IssueFormModule.IssueFormModule>();
         }
     }
 

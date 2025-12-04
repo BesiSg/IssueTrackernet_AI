@@ -8,6 +8,7 @@
     <AnalysisLevel>5.0-minimum</AnalysisLevel>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <RunAnalyzersDuringBuild>True</RunAnalyzersDuringBuild>
+    <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
 
   <ItemGroup>

@@ -1,59 +1,49 @@
-﻿using System.Collections.ObjectModel;
-using System.Windows;
-using System.Xml.Serialization;
+﻿using System.Xml.Serialization;
 
 namespace Utility.Lib.Filter
 {
     [Serializable]
     public class FilterHandler : BaseUtility
     {
+        [XmlIgnore]
+        public EventHandler<List<FilterItem>>? filtersChanged;
+        public FilterHandler() : this(string.Empty)
+        {
+        }
         public FilterHandler(string name)
         {
-            LabelName = name; 
-            ClearAllCommand = new DelegateCommand(ClearAll);
-            CheckAllCommand = new DelegateCommand(CheckAll);
+            LabelName = name;
         }
         public string LabelName
         {
-            get => GetValue(() => this.LabelName);
-            set => SetValue(() => this.LabelName, value);
+            get => GetValue(() => LabelName);
+            set => SetValue(() => LabelName, value);
         }
-        [XmlIgnore]
-        public ObservableCollection<FilterItem> Collection { get; set; } = new ObservableCollection<FilterItem>();
-        [XmlIgnore]
-        public DelegateCommand ClearAllCommand { get; private set; }
-        [XmlIgnore]
-        public DelegateCommand CheckAllCommand { get; private set; }
-        public FilterHandler():this(string.Empty)
-        {
-        }
-
         public List<FilterItem> _Collection { get; set; } = new List<FilterItem>();
         private void Add(object item, bool Selected = true)
         {
-            if (this._Collection.Any(x => x.Entry?.ToString() == item?.ToString())) return;
-            this._Collection.Add(new FilterItem(item, Selected));
+            if (_Collection.Any(x => x.Entry?.ToString() == item?.ToString())) return;
+            _Collection.Add(new FilterItem(item, Selected));
         }
         public void Add(IEnumerable<object> source)
         {
             if (source == null) return;
-            source.ToList().ForEach(x => this.Add(x));
-            this._Collection = this._Collection.OrderBy(x => x.Entry?.ToString()).ToList();
-            Application.Current.Dispatcher.BeginInvoke((Action)delegate // <--- HERE
+            lock (_Collection)
             {
-                this.Collection.Clear();
-                this._Collection.ForEach(x => this.Collection.Add(x));
-            });
+                source.ToList().ForEach(x => Add(x));
+                _Collection = _Collection.OrderBy(x => x.Entry?.ToString()).ToList();
+            }
+            filtersChanged?.Invoke(this, _Collection);
         }
         public IEnumerable<FilterItem> GetDisabled()
         {
-            return this._Collection.Where(x => x.Selected == false);
+            return _Collection.Where(x => x.Selected == false);
         }
-        private void ClearAll()
+        public void ClearAll()
         {
             this._Collection.ForEach(x => x.Selected = false);
         }
-        private void CheckAll()
+        public void CheckAll()
         {
             this._Collection.ForEach(x => x.Selected = true);
         }

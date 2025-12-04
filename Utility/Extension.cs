@@ -40,6 +40,55 @@ namespace Utility
             return default;
         }
 
+        public static void CopyProperties<T>(this T destination, T source)
+        {
+            if (source == null || destination == null)
+                throw new ArgumentNullException("Source or/and Destination objects are null");
+
+            Type type = typeof(T);
+            PropertyInfo[] properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+
+            foreach (PropertyInfo property in properties)
+            {
+                if (property.CanRead && property.CanWrite)
+                {
+                    object value = property.GetValue(source, null);
+                    property.SetValue(destination, value, null);
+                }
+            }
+        }
+        public static bool AreEqual<T>(this T obj1, T obj2)
+        {
+            if (ReferenceEquals(obj1, obj2))
+                return true;
+
+            if (obj1 == null || obj2 == null)
+                return false;
+
+            Type type = typeof(T);
+            PropertyInfo[] properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+
+            foreach (PropertyInfo property in properties)
+            {
+                if (!property.CanRead)
+                    continue;
+
+                object value1 = property.GetValue(obj1);
+                object value2 = property.GetValue(obj2);
+
+                if (value1 == null && value2 == null)
+                    continue;
+
+                if (value1 == null || value2 == null)
+                    return false;
+
+                if (!value1.Equals(value2))
+                    return false;
+            }
+
+            return true;
+        }
+
         public static IEnumerable<string> GetAttribute<T>(this Object obj)
         {
             PropertyInfo[] props = typeof(Object).GetProperties();
@@ -66,7 +115,7 @@ namespace Utility
         {
             var htmlDoc = new HtmlDocument();
             htmlDoc.LoadHtml(htmlContent);
-            var cleanedtext=htmlDoc.DocumentNode.InnerText.Replace("&nbsp;", " ");
+            var cleanedtext = htmlDoc.DocumentNode.InnerText.Replace("&nbsp;", " ");
             cleanedtext = cleanedtext.Replace("&amp;amp;", "&amp;");
             string re = @"[^\x09\x0A\x0D\x20-\xD7FF\xE000-\xFFFD\x10000-x10FFFF]";
             return Regex.Replace(cleanedtext, re, "");

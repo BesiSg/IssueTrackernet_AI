@@ -1,15 +1,16 @@
 ﻿using System.Windows.Controls;
 
-namespace FilterListModule.Views
+namespace IssueFormModule.Views
 {
     /// <summary>
     /// Interaction logic for IssueList.xaml
     /// </summary>
-    public partial class FilterItem : UserControl
+    public partial class IssueForm : UserControl
     {
-        public FilterItem()
+        public IssueForm()
         {
             InitializeComponent();
         }
+
     }
 }

@@ -6,11 +6,10 @@ using Utility.Lib.Ticket;
 namespace Handlers
 {
     [Serializable]
-    public class Filters : aSaveable
+    public class Filters : aSaveable<FilterHandler>
     {
         private Dataset Dataset;
         public event EventHandler<FilterItem> SelectionChange;
-        public XmlDictionary<string, FilterHandler> Filter { get; set; } = new XmlDictionary<string, FilterHandler>();
         public Task<ErrorResult> UpdateFilters()
         {
             return Task.Run(() =>
@@ -24,8 +23,8 @@ namespace Handlers
                         var x = Expression.Parameter(typeof(TicketInfo), filt);
                         var body = Expression.PropertyOrField(x, filt);
                         var lambda = Expression.Lambda<Func<TicketInfo, string>>(body, x);
-                        var distinct = this.Dataset.GetTicketInfos().Select(lambda.Compile())?.Distinct();
-                        this.Filter[filt].Add(distinct);
+                        var distinct = this.Dataset.GetValues().Select(lambda.Compile())?.Distinct();
+                        this[filt].Add(distinct);
                     }
                     GetAllCollection().ToList().ForEach(x => x.SelectionChange += Filter_SelectionChange);
                 }
@@ -44,7 +43,7 @@ namespace Handlers
                 ClearErrorFlags();
                 try
                 {
-                    foreach (var filter in this.Filter)
+                    foreach (var filter in this.Data)
                     {
                         foreach (var fil in filter.Value.GetDisabled())
                         {
@@ -52,7 +51,7 @@ namespace Handlers
                             var body = Expression.PropertyOrField(x, filter.Key);
                             var call = Expression.Equal(body, Expression.Constant(fil.Entry));
                             var lambda = Expression.Lambda<Func<TicketInfo, bool>>(call, x);
-                            this.Dataset.GetTicketInfos().Where(lambda.Compile()).ToList().ForEach(ticket => Lst[ticket.Key.Value] = ticket);
+                            this.Dataset.GetValues().Where(lambda.Compile()).ToList().ForEach(ticket => Lst[ticket.Key.Value] = ticket);
                             //foreach (var ticket in this.Dataset.GetTicketInfos().Where(lambda.Compile()))
                             //    Lst[ticket.Key.Value] = ticket;
                         }
@@ -74,9 +73,7 @@ namespace Handlers
                 try
                 {
                     this.UpdateFilters().Wait();
-                    var Task2 = this.GetListToRemove();
-                    Task2.Wait();
-                    Lst = Task2.Result.Result;
+                    Lst = this.GetListToRemove().Result.Result;
                 }
                 catch (Exception ex)
                 {
@@ -92,7 +89,7 @@ namespace Handlers
         }
         private void Filter_SelectionChange(object sender, EventArgs e)
         {
-            this.SelectionChange?.Invoke(null, null);
+            this.SelectionChange?.Invoke(this, null);
         }
 
         public FilterHandler GetHandlerByName(string Name)
@@ -101,26 +98,26 @@ namespace Handlers
         }
         public FilterHandler GetFilterHandlerByName(string Name)
         {
-            if (!Filter.ContainsKey(Name))
-                Filter[Name] = new FilterHandler(Name);
-            return Filter[Name];
+            if (!ContainsKey(Name))
+                this[Name] = new FilterHandler(Name);
+            return this[Name];
         }
         public IEnumerable<FilterItem> GetCollectionByName(string Name)
         {
-            return Filter[Name]?._Collection;
+            return this[Name]?._Collection;
         }
         private IEnumerable<FilterItem> GetAllCollection()
         {
-            List<FilterItem> Col = new List<FilterItem>();
-            this.Filter.Values.ToList().ForEach(property=>Col.AddRange(property._Collection));
+            var Col = new List<FilterItem>();
+            this.GetValues().ToList().ForEach(property => Col.AddRange(property._Collection));
             return Col;
         }
         public Filters()
         {
             foreach (var filt in Enum.GetNames(typeof(eFilter)))
             {
-                if (this.Filter?.ContainsKey(filt) == true) continue;
-                this.Filter[filt] = new FilterHandler(filt);
+                if (ContainsKey(filt) == true) continue;
+                this[filt] = new FilterHandler(filt);
             }
         }
     }

@@ -3,16 +3,15 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             mc:Ignorable="d" 
-             Height="275" Width="100">
+             mc:Ignorable="d">
     <Border Style="{StaticResource MiniFrame}">
         <StackPanel Margin="2">
-            <Label Content="{Binding LabelName}"/>
+            <Label Content="{Binding filterHandler.LabelName}"/>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                 <Button Content="○" Width="25" Height="25" Command="{Binding ClearAllCommand}" Style="{StaticResource BtnCommonRedText}" HorizontalAlignment="Left"/>
                 <Button Content="✔" Width="25" Height="25" Command="{Binding CheckAllCommand}" Style="{StaticResource BtnCommonLimeText}" Margin="5,0,0,0" HorizontalAlignment="Right"/>
             </StackPanel>
-            <ListBox ItemsSource="{Binding Collection}" Width="auto" Height="269" Margin="0,2,0,0">
+            <ListBox ItemsSource="{Binding filterHandler._Collection}" Width="141" Height="305" Margin="0,2,0,0">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel>

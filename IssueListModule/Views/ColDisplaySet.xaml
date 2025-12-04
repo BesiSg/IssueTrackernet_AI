@@ -5,9 +5,10 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local1="clr-namespace:Utility;assembly=Utility"
              mc:Ignorable="d" 
-             Height="400" Width="200">
+             Height="400" Width="200" xmlns:prism="http://prismlibrary.com/" xmlns:it="http://schemas.microsoft.com/xaml/behaviors"
+prism:ViewModelLocator.AutoWireViewModel="True">
     <Border Style="{StaticResource MiniFrame}">
-        <ListBox ItemsSource="{Binding VisList}">
+        <ListBox ItemsSource="{Binding Data}">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel>

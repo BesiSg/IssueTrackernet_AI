@@ -14,6 +14,7 @@
     <RunAnalyzersDuringLiveAnalysis>True</RunAnalyzersDuringLiveAnalysis>
     <PackageIcon>icons8-snoopy-100.png</PackageIcon>
     <ApplicationIcon>1-8a06832f.ico</ApplicationIcon>
+    <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
 
   <ItemGroup>
@@ -26,13 +27,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\IssueFormPage\IssueFormPage.csproj" />
     <ProjectReference Include="..\IssueListModule\IssuelistModule.csproj" />
     <ProjectReference Include="..\UIs\UIs.csproj" />
     <ProjectReference Include="..\Utility\Utility.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Prism\" />
   </ItemGroup>
 
   <ItemGroup>
