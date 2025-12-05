@@ -11,7 +11,7 @@
                 <Button Content="○" Width="25" Height="25" Command="{Binding ClearAllCommand}" Style="{StaticResource BtnCommonRedText}" HorizontalAlignment="Left"/>
                 <Button Content="✔" Width="25" Height="25" Command="{Binding CheckAllCommand}" Style="{StaticResource BtnCommonLimeText}" Margin="5,0,0,0" HorizontalAlignment="Right"/>
             </StackPanel>
-            <ListBox ItemsSource="{Binding filterHandler._Collection}" Width="141" Height="305" Margin="0,2,0,0">
+            <ListBox ItemsSource="{Binding filterItems}" Width="141" Height="305" Margin="0,2,0,0">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel>

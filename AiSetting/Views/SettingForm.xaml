@@ -1,0 +1,24 @@
+﻿<UserControl x:Class="AiSetting.Views.SettingForm"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d"
+             Height="460" Width="1880"
+             xmlns:prism="http://prismlibrary.com/" 
+             prism:ViewModelLocator.AutoWireViewModel="True">
+    <Border Style="{StaticResource FrameWithShadow}">
+        <StackPanel Orientation="Horizontal">
+            <StackPanel Orientation="Vertical" Margin="10">
+                <StackPanel Orientation="Horizontal" Margin="0,10,0,10">
+                    <Label Style="{StaticResource LB_ItemContent}" Content="B.AI Token" Width="70"/>
+                    <TextBox Height="25" Text="{Binding aiDataset.BesiAIToken}" Width="1780"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Label Style="{StaticResource LB_ItemContent}" Content="AIQuery" Width="70"/>
+                    <TextBox Text="{Binding aiDataset.AIQuery}" Width="1780" Height="315" TextWrapping="Wrap" AcceptsReturn="True"/>
+                </StackPanel>
+            </StackPanel>
+        </StackPanel>
+    </Border>
+</UserControl>

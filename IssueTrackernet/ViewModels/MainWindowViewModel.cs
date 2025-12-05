@@ -1,4 +1,5 @@
-﻿using Handlers;
+﻿using BesiAI;
+using Handlers;
 using Utility;
 using Utility.EventAggregator;
 using Utility.Lib.PathConfig;
@@ -14,6 +15,7 @@ namespace IssueTrackernet.ViewModels
         private SettingHandler<Dataset> datasetcfgHandler;
         private SettingHandler<AIDataset> aidatasetHandler;
         private DataSetHandler datasetHandler;
+        private AIHandler AIHandler;
         static string StartupPath = AppDomain.CurrentDomain.BaseDirectory;
         const string PathConfig_Filename = "Data\\Path.xml";
         const string FilterConfig_Filename = "Data\\Filter.xml";
@@ -30,18 +32,20 @@ namespace IssueTrackernet.ViewModels
         public DelegateCommand ImportDataCommand { get; private set; }
         public DelegateCommand OnClosingCommand { get; private set; }
         private IEventAggregator _ea;
-        public MainWindowViewModel(IEventAggregator ea, SettingHandler<PathConfig> pathcfg, SettingHandler<Filters> filtercfg, SettingHandler<Dataset> datasetcfg, SettingHandler<AIDataset> aiDatasetHandler, DataSetHandler datasethandler)
+        public MainWindowViewModel(IEventAggregator ea, SettingHandler<PathConfig> pathcfg, SettingHandler<Filters> filtercfg, SettingHandler<Dataset> datasetcfg, SettingHandler<AIDataset> aiDatasetHandler, DataSetHandler datasethandler, AIHandler aihandler)
         {
             _ea = ea;
             pathcfgHandler = pathcfg;
             filtercfgHandler = filtercfg;
             datasetcfgHandler = datasetcfg;
             aidatasetHandler = aiDatasetHandler;
+            AIHandler = aihandler;
             pathcfgHandler.SetPathnLoad(PathConfig_Path);
             filtercfgHandler.SetPathnLoad(FilterConfig_Path);
             datasetcfgHandler.SetPathnLoad(Dataset_Path);
             aidatasetHandler.SetPathnLoad(AiConfig_Path);
             FilterCfg.SetDataset(DatasetCfg);
+            AIHandler.SetData(aidatasetHandler.Get);
             filtercfgHandler.SettingLoaded += FiltercfgHandler_SettingLoaded;
             datasetcfgHandler.SettingLoaded += DatasetcfgHandler_SettingLoaded;
             datasetHandler = datasethandler;

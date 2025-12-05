@@ -50,10 +50,6 @@
                 <Button Height="25" Width="60" Content="SetPrio" Command="{Binding PriorityChangedCommand}" Style="{StaticResource Button_FrameMenu}" Margin="5,0,0,0"/>
             </StackPanel>
         </StackPanel>
-        <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" Margin="0,10,0,10">
-            <Label Style="{StaticResource LB_ItemContent}" Content="B.AI Token" Width="70"/>
-            <TextBox Height="25" Margin="10,0,0,0" Text="{Binding Aidataset.BesiAIToken}" Width="400"/>
-        </StackPanel>
         <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
             <StackPanel Name="IssueCount" HorizontalAlignment="Right" Orientation="Horizontal">
                 <Label Margin="0,0,0,0" Style="{StaticResource LB_ItemContent}" Content="Issue Cnt" Width="70"/>

@@ -1,4 +1,6 @@
-﻿using Handlers;
+﻿using AiSetting;
+using BesiAI;
+using Handlers;
 using IssueTrackernet.Views;
 using System.Windows;
 using Utility.Lib.PathConfig;
@@ -26,6 +28,7 @@ namespace IssueTrackernet
             containerRegistry.RegisterSingleton<SettingHandler<Dataset>>();
             containerRegistry.RegisterSingleton<SettingHandler<AIDataset>>();
             containerRegistry.RegisterSingleton<DataSetHandler>();
+            containerRegistry.RegisterSingleton<AIHandler>();
         }
 
         protected override void ConfigureModuleCatalog(IModuleCatalog moduleCatalog)
@@ -33,6 +36,7 @@ namespace IssueTrackernet
             moduleCatalog.AddModule<IssuelistModule.IssuelistModule>();
             moduleCatalog.AddModule<FilterListModule.FilterListModule>();
             moduleCatalog.AddModule<IssueFormModule.IssueFormModule>();
+            moduleCatalog.AddModule<AiSettingFormModule>();
         }
     }
 

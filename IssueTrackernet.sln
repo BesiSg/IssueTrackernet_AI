@@ -24,6 +24,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BesiAI", "BesiAI\BesiAI.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IssueFormPage", "IssueFormPage\IssueFormPage.csproj", "{21E98A23-D797-4656-BA07-D6DD1F93C44B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AiSetting", "AiSetting\AiSetting.csproj", "{4333485C-8CE1-4B6B-A49D-F1044878E3D8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -104,6 +106,14 @@ Global
 		{21E98A23-D797-4656-BA07-D6DD1F93C44B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{21E98A23-D797-4656-BA07-D6DD1F93C44B}.Release|x64.ActiveCfg = Release|x64
 		{21E98A23-D797-4656-BA07-D6DD1F93C44B}.Release|x64.Build.0 = Release|x64
+		{4333485C-8CE1-4B6B-A49D-F1044878E3D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4333485C-8CE1-4B6B-A49D-F1044878E3D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4333485C-8CE1-4B6B-A49D-F1044878E3D8}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{4333485C-8CE1-4B6B-A49D-F1044878E3D8}.Debug|x64.Build.0 = Debug|Any CPU
+		{4333485C-8CE1-4B6B-A49D-F1044878E3D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4333485C-8CE1-4B6B-A49D-F1044878E3D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4333485C-8CE1-4B6B-A49D-F1044878E3D8}.Release|x64.ActiveCfg = Release|Any CPU
+		{4333485C-8CE1-4B6B-A49D-F1044878E3D8}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

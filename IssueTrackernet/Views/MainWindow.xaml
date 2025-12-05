@@ -17,6 +17,9 @@
             <TabItem Header="IssueViewer">
                 <ContentControl prism:RegionManager.RegionName="IssueFormRegion" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Margin="5"/>
             </TabItem>
+            <TabItem Header="AiSetting">
+                <ContentControl prism:RegionManager.RegionName="AiSettingRegion" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Margin="5"/>
+            </TabItem>
         </TabControl>
 
         <ContentControl prism:RegionManager.RegionName="ContentRegion" Margin="5"/>

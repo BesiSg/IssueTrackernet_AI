@@ -2,13 +2,14 @@
 using System.Text;
 using System.Text.Json;
 using Utility;
+using Utility.Lib.Ticket;
 
 namespace BesiAI
 {
     public class AIHandler : BaseUtility
     {
         private const string endpoint = "http://10.10.9.132:4000/openai/deployments/Azure-GPT4o/completions";
-        private string token = string.Empty;
+        private AIDataset AIDataset { get; set; }
         public Task<(ErrorResult, string)> GetAnswerAsync(string prompt)
         {
             return Task.Run(() =>
@@ -18,13 +19,13 @@ namespace BesiAI
                 {
                     using HttpClient client = new HttpClient();
 
-                    if (token == string.Empty) ThrowError("Token key is empty.");
-                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                    if (AIDataset.BesiAIToken == string.Empty) ThrowError("Token key is empty.");
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", AIDataset.BesiAIToken);
                     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
                     var payload = new
                     {
-                        prompt = prompt
+                        prompt = AIDataset.AIQuery + prompt
                     };
 
                     string jsonPayload = JsonSerializer.Serialize(payload);
@@ -65,9 +66,10 @@ namespace BesiAI
 
         }
 
-        public AIHandler(string token)
+        public AIHandler() { }
+        public void SetData(AIDataset source)
         {
-            token = token ?? string.Empty;
+            AIDataset = source;
         }
     }
 }

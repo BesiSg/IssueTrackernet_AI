@@ -27,6 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\AiSetting\AiSetting.csproj" />
     <ProjectReference Include="..\IssueFormPage\IssueFormPage.csproj" />
     <ProjectReference Include="..\IssueListModule\IssuelistModule.csproj" />
     <ProjectReference Include="..\UIs\UIs.csproj" />

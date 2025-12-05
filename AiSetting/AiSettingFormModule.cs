@@ -1,13 +1,13 @@
-using IssueFormModule.Views;
+﻿using AiSetting.Views;
 
-namespace IssueFormModule
+namespace AiSetting
 {
-    public class IssueFormModule : IModule
+    public class AiSettingFormModule : IModule
     {
         public void OnInitialized(IContainerProvider containerProvider)
         {
             var regionManager = containerProvider.Resolve<IRegionManager>();
-            regionManager.RegisterViewWithRegion("IssueFormRegion", typeof(IssueForm));
+            regionManager.RegisterViewWithRegion("AiSettingRegion", typeof(SettingForm));
         }
 
         public void RegisterTypes(IContainerRegistry containerRegistry)

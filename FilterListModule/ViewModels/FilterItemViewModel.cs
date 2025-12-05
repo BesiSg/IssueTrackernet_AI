@@ -1,5 +1,6 @@
 ﻿using Handlers;
 using System.Collections.ObjectModel;
+using System.Windows;
 using Utility;
 using Utility.Lib.Filter;
 using Utility.Lib.SettingHandler;
@@ -25,8 +26,11 @@ namespace FilterListModule.ViewModels
 
         private void filtersChangedEvent(object? sender, List<FilterItem> e)
         {
-            filterItems.Clear();
-            filterItems.AddRange(e);
+            Application.Current.Dispatcher.BeginInvoke((Action)delegate // <--- HERE
+            {
+                filterItems.Clear();
+                filterItems.AddRange(e);
+            });
         }
 
         private void ClearAll()
