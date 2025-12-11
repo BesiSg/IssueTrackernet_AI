@@ -1,5 +1,6 @@
 ﻿using BesiAI;
 using Handlers;
+using System.Windows.Controls.Primitives;
 using Utility;
 using Utility.EventAggregator;
 using Utility.Lib.PathConfig;
@@ -8,7 +9,7 @@ using Utility.Lib.Ticket;
 
 namespace IssueTrackernet.ViewModels
 {
-    public class MainWindowViewModel : BaseUtility
+    public class MainWindowViewModel : ViewModelBase
     {
         private SettingHandler<PathConfig> pathcfgHandler;
         private SettingHandler<Filters> filtercfgHandler;
@@ -29,7 +30,12 @@ namespace IssueTrackernet.ViewModels
         public PathConfig PathCfg => this.pathcfgHandler.Get;
         private Dataset DatasetCfg => datasetcfgHandler.Get;
         public DelegateCommand SaveDataCommand { get; private set; }
-        public DelegateCommand ImportDataCommand { get; private set; }
+        public AsyncDelegateCommand ImportDataCommand { get; private set; }
+        public bool CanImportData
+        {
+            get => GetValue(() => CanImportData);
+            set => SetValue(() => CanImportData, value);
+        }
         public DelegateCommand OnClosingCommand { get; private set; }
         private IEventAggregator _ea;
         public MainWindowViewModel(IEventAggregator ea, SettingHandler<PathConfig> pathcfg, SettingHandler<Filters> filtercfg, SettingHandler<Dataset> datasetcfg, SettingHandler<AIDataset> aiDatasetHandler, DataSetHandler datasethandler, AIHandler aihandler)
@@ -51,8 +57,8 @@ namespace IssueTrackernet.ViewModels
             datasetHandler = datasethandler;
             datasetHandler.SetData(DatasetCfg);
             SaveDataCommand = new DelegateCommand(() => Save());
-            ImportDataCommand = new DelegateCommand(() => ImportData());
             OnClosingCommand = new DelegateCommand(() => Save());
+            CanImportData = true;
         }
 
         private void DatasetcfgHandler_SettingLoaded(object? sender, EventArgs e)
@@ -72,10 +78,16 @@ namespace IssueTrackernet.ViewModels
             this.datasetcfgHandler.Save();
             this.aidatasetHandler.Save();
         }
-        private async void ImportData()
+        private async Task ImportData()
         {
-            await datasetHandler.UpdatefromJira();
-            _ea.GetEvent<IssuesListChanged>().Publish(DatasetCfg.GetValues());
+            await Task.Run(() =>
+            {
+                CanImportData = false;
+                datasetHandler.UpdatefromJira().Wait();
+                _ea.GetEvent<IssuesListChanged>().Publish(DatasetCfg.GetValues());
+                CanImportData = true;
+            });
         }
+
     }
 }

@@ -58,6 +58,7 @@
             <StackPanel Name="LastUpdate" HorizontalAlignment="Right" Orientation="Horizontal">
                 <Label Margin="40,0,0,0" Style="{StaticResource LB_ItemContent}" Content="Last Update" Width="80"/>
                 <Label Margin="10,0,0,0"  Content="{Binding Datasetcfg.LastUpdateDate}" Style="{StaticResource LB_ItemData_Center}" Width="150"/>
+                <Button Height="25" Width="90" Content="Summarize" Command="{Binding SummarizeCommand}" Style="{StaticResource Button_FrameMenu}" Margin="5,0,0,0"/>
             </StackPanel>
         </StackPanel>
         <StackPanel Orientation="Horizontal">

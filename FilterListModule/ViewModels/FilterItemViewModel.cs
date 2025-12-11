@@ -20,17 +20,14 @@ namespace FilterListModule.ViewModels
             _settinghandlerfilters = filters;
             filterHandler = filter;
             filterHandler.filtersChanged += filtersChangedEvent;
+            UpdateCollection(filterHandler._Collection);
             ClearAllCommand = new DelegateCommand(ClearAll);
             CheckAllCommand = new DelegateCommand(CheckAll);
         }
 
         private void filtersChangedEvent(object? sender, List<FilterItem> e)
         {
-            Application.Current.Dispatcher.BeginInvoke((Action)delegate // <--- HERE
-            {
-                filterItems.Clear();
-                filterItems.AddRange(e);
-            });
+            UpdateCollection(e);
         }
 
         private void ClearAll()
@@ -41,5 +38,15 @@ namespace FilterListModule.ViewModels
         {
             filterHandler.CheckAll();
         }
+
+        private void UpdateCollection(List<FilterItem> source)
+        {
+            Application.Current.Dispatcher.BeginInvoke((Action)delegate // <--- HERE
+            {
+                filterItems.Clear();
+                filterItems.AddRange(source);
+            });
+        }
+
     }
 }

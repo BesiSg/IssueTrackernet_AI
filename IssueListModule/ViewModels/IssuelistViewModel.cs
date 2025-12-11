@@ -1,4 +1,6 @@
-﻿using Handlers;
+﻿
+using BesiAI;
+using Handlers;
 using Handlers.EventAggregator;
 using System.Collections.ObjectModel;
 using System.Timers;
@@ -13,7 +15,7 @@ using Utility.Lib.Ticket;
 
 namespace IssuelistModule.ViewModels
 {
-    public class IssuelistViewModel : BaseUtility
+    public class IssuelistViewModel : ViewModelBase
     {
         IEventAggregator _ea;
         public ObservableCollection<TicketInfo> Data
@@ -23,19 +25,23 @@ namespace IssuelistModule.ViewModels
         }
         private List<TicketInfo> _Data = new List<TicketInfo>();
         public DelegateCommand PriorityChangedCommand { get; private set; }
-        public DelegateCommand OnloadedCommand { get; private set; }
-        public DelegateCommand LoadDataSet { get; private set; }
-        public DelegateCommand SaveDataSet { get; private set; }
+        public AsyncDelegateCommand SummarizeCommand { get; private set; }
+        public bool CanSummarize
+        {
+            get => GetValue(() => CanSummarize);
+            set => SetValue(() => CanSummarize, value);
+        }
+
         private SettingHandler<PathConfig> pathcfgHandler;
         private SettingHandler<Filters> filtercfgHandler;
         private SettingHandler<Dataset> datasetcfgHandler;
         private SettingHandler<AIDataset> aidatasetHandler;
+        private AIHandler AIHandler;
         private DataSetHandler dataSetHandler;
         public PathConfig PathCfg => pathcfgHandler.Get;
         public Filters Filtercfg => filtercfgHandler.Get;
         public Dataset Datasetcfg => datasetcfgHandler.Get;
         public AIDataset Aidataset => aidatasetHandler.Get;
-
         public TicketInfo Selected
         {
             get => this.GetValue(() => this.Selected);
@@ -48,7 +54,7 @@ namespace IssuelistModule.ViewModels
             }
         }
 
-        public IssuelistViewModel(IEventAggregator ea, SettingHandler<PathConfig> pathcfg, SettingHandler<Filters> filtercfg, SettingHandler<Dataset> datasetcfg, SettingHandler<AIDataset> aiDatasetHandler, DataSetHandler setHandler)
+        public IssuelistViewModel(IEventAggregator ea, SettingHandler<PathConfig> pathcfg, SettingHandler<Filters> filtercfg, SettingHandler<Dataset> datasetcfg, SettingHandler<AIDataset> aiDatasetHandler, DataSetHandler setHandler, AIHandler handler)
         {
             _ea = ea;
             this.pathcfgHandler = pathcfg;
@@ -56,14 +62,15 @@ namespace IssuelistModule.ViewModels
             this.datasetcfgHandler = datasetcfg;
             this.aidatasetHandler = aiDatasetHandler;
             this.dataSetHandler = setHandler;
+            AIHandler = handler;
             Data = new ObservableCollection<TicketInfo>();
             this.datasetcfgHandler.SettingLoaded += DatasetCfgHandler_SettingLoaded;
             this.filtercfgHandler.SettingLoaded += FilterCfgHandler_SettingLoaded;
             Filtercfg.SelectionChange += Filtercfg_SelectionChange;
             this.FilterDataSetToUI().Wait();
-
             PriorityChangedCommand = new DelegateCommand(() => this.dataSetHandler.SetPrio());
             _ea.GetEvent<IssuesListChanged>().Subscribe(GetUpdatedList);
+            CanSummarize = true;
         }
 
         bool FilterChanged = false;
@@ -197,6 +204,19 @@ namespace IssuelistModule.ViewModels
                 this.Data.AddRange(this._Data);
                 this.IssueCounter = this.Data.Count;
             });
+        }
+
+        private async Task Summarize()
+        {
+            CanSummarize = false;
+            await Task.Run(() =>
+            {
+                foreach (var ticket in Data)
+                {
+                    ticket.SummarizedStatus = AIHandler.GetAnswerAsync(ticket.Comments).Result.Item2;
+                }
+            });
+            CanSummarize = true;
         }
     }
 }
