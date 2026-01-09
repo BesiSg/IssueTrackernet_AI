@@ -13,6 +13,11 @@
             get => this.GetValue(() => this.AIQuery);
             set => this.SetValue(() => this.AIQuery, value);
         }
+        public string IPAddress
+        {
+            get => this.GetValue(() => this.IPAddress);
+            set => this.SetValue(() => this.IPAddress, value);
+        }
     }
 
 }

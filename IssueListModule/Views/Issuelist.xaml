@@ -10,11 +10,6 @@
              xmlns:it="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:prism="http://prismlibrary.com/" 
              prism:ViewModelLocator.AutoWireViewModel="True">
-    <it:Interaction.Triggers>
-        <it:EventTrigger EventName="Loaded">
-            <it:InvokeCommandAction Command="{Binding OnloadedCommand}" />
-        </it:EventTrigger>
-    </it:Interaction.Triggers>
     <UserControl.Resources>
         <utility:BindingProxy x:Key="context" Data="{Binding}"/>
         <utility:BindingProxy x:Key="vTSGSD" Data="{Binding ColDisp.vTSGSD.Display}"/>
@@ -66,23 +61,23 @@
                                 AutoGenerateColumns="False" SelectedItem="{Binding Selected}" CanUserAddRows="False" SelectionUnit="FullRow" EnableRowVirtualization="True" GridLinesVisibility="All" 
                                 ColumnHeaderHeight="30"  Height="400" Width="1690" RowHeight="25">
                 <DataGrid.Columns>
-                    <DataGridTemplateColumn Visibility="{Binding Data.ColDisp.vKey.Display, Source={StaticResource context}, Converter={StaticResource BooltoVis},UpdateSourceTrigger=PropertyChanged}" Header="Key" CanUserSort="True" CanUserResize="True" CanUserReorder="False">
+                    <DataGridTemplateColumn Visibility="{Binding Data.ColDisp.vKey.Display, Source={StaticResource context}, Converter={StaticResource BooltoVis},UpdateSourceTrigger=PropertyChanged}" SortMemberPath="Key.Value" Header="Key" CanUserSort="True" CanUserResize="True" CanUserReorder="False">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock>
-                             <Hyperlink NavigateUri="{Binding Key.Uri}">
-                                  <it:Interaction.Triggers>
-                                      <it:EventTrigger EventName="RequestNavigate">
-                                          <it:InvokeCommandAction Command="{Binding RequestedNavigateCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Hyperlink}}, Path=NavigateUri}"/>
-                                      </it:EventTrigger>
-                                  </it:Interaction.Triggers>
-                                  <TextBlock Text="{Binding Key.Value}"/>
-                             </Hyperlink>
-                      </TextBlock>
+                                     <Hyperlink NavigateUri="{Binding Key.Uri}">
+                                          <it:Interaction.Triggers>
+                                              <it:EventTrigger EventName="RequestNavigate">
+                                                  <it:InvokeCommandAction Command="{Binding RequestedNavigateCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Hyperlink}}, Path=NavigateUri}"/>
+                                              </it:EventTrigger>
+                                          </it:Interaction.Triggers>
+                                          <TextBlock Text="{Binding Key.Value}"/>
+                                     </Hyperlink>
+                                </TextBlock>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Visibility="{Binding Data.ColDisp.vSummary.Display, Source={StaticResource context}, Converter={StaticResource BooltoVis},UpdateSourceTrigger=PropertyChanged}" Header="Summary" IsReadOnly="True" CanUserSort="True" CanUserResize="True" CanUserReorder="False">
+                    <DataGridTemplateColumn Visibility="{Binding Data.ColDisp.vSummary.Display, Source={StaticResource context}, Converter={StaticResource BooltoVis},UpdateSourceTrigger=PropertyChanged}" SortMemberPath="Summary.Value" Header="Summary" IsReadOnly="True" CanUserSort="True" CanUserResize="True" CanUserReorder="False">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock>
@@ -137,7 +132,13 @@
               </DataGridTemplateColumn.CellTemplate>
           </DataGridTemplateColumn>-->
                     <DataGridTextColumn Visibility="{Binding Data.ColDisp.vComments.Display, Source={StaticResource context},Converter={StaticResource BooltoVis}}" Header="Comments" Binding="{Binding Comments}" IsReadOnly="True" Width="240" CanUserSort="True" CanUserResize="True" CanUserReorder="False"/>
-                    <DataGridTextColumn Visibility="{Binding Data.ColDisp.vSummarizedStatus.Display, Source={StaticResource context},Converter={StaticResource BooltoVis}}" Header="SummarizedStatus" Binding="{Binding SummarizedStatus}" IsReadOnly="True" Width="240" CanUserSort="True" CanUserResize="True" CanUserReorder="False"/>
+                    <DataGridTextColumn Visibility="{Binding Data.ColDisp.vSummarizedStatus.Display, Source={StaticResource context},Converter={StaticResource BooltoVis}}" Header="SummarizedStatus" Binding="{Binding SummarizedStatus}" IsReadOnly="True" Width="240" CanUserSort="True" CanUserResize="True" CanUserReorder="False">
+                        <DataGridTextColumn.CellStyle>
+                            <Style TargetType="DataGridCell">
+                                <Setter Property="ToolTip" Value="{Binding SummarizedStatus}"/>
+                            </Style>
+                        </DataGridTextColumn.CellStyle>
+                    </DataGridTextColumn>
                     <DataGridCheckBoxColumn Header="HotPriority" Visibility="{Binding Data.ColDisp.vHotPriority.Display, Source={StaticResource context}, Converter={StaticResource BooltoVis}}" Width="100" CanUserSort="True" CanUserResize="True" Binding="{Binding HotPriority, Converter={StaticResource stringtoBool}}" CanUserReorder="False"/>
                 </DataGrid.Columns>
             </DataGrid>

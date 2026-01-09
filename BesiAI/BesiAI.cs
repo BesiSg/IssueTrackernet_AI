@@ -8,7 +8,7 @@ namespace BesiAI
 {
     public class AIHandler : BaseUtility
     {
-        private const string endpoint = "http://10.10.9.132:4000/openai/deployments/Azure-GPT4o/completions";
+        private const string endpoint = "/openai/deployments/Azure-GPT4o/completions";
         private AIDataset AIDataset { get; set; }
         public Task<(ErrorResult, string)> GetAnswerAsync(string prompt)
         {
@@ -31,7 +31,7 @@ namespace BesiAI
                     string jsonPayload = JsonSerializer.Serialize(payload);
                     using var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
 
-                    HttpResponseMessage response = client.PostAsync(endpoint, content).Result;
+                    HttpResponseMessage response = client.PostAsync($"http://{AIDataset.IPAddress}{endpoint}", content).Result;
 
                     if (response.IsSuccessStatusCode)
                     {

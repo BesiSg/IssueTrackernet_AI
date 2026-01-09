@@ -14,9 +14,13 @@
                     <Label Style="{StaticResource LB_ItemContent}" Content="B.AI Token" Width="70"/>
                     <TextBox Height="25" Text="{Binding aiDataset.BesiAIToken}" Width="1780"/>
                 </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                    <Label Style="{StaticResource LB_ItemContent}" Content="IPAdd" Width="70"/>
+                    <TextBox Height="25" Text="{Binding aiDataset.IPAddress}" Width="1780" TextWrapping="Wrap" AcceptsReturn="True"/>
+                </StackPanel>
                 <StackPanel Orientation="Horizontal">
                     <Label Style="{StaticResource LB_ItemContent}" Content="AIQuery" Width="70"/>
-                    <TextBox Text="{Binding aiDataset.AIQuery}" Width="1780" Height="315" TextWrapping="Wrap" AcceptsReturn="True"/>
+                    <TextBox Text="{Binding aiDataset.AIQuery}" Width="1780" Height="250" TextWrapping="Wrap" AcceptsReturn="True"/>
                 </StackPanel>
             </StackPanel>
         </StackPanel>

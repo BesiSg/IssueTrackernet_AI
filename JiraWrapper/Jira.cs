@@ -15,7 +15,7 @@ namespace JiraWrapper
         public IEnumerable<Issue> GetIssues(Project project, DateTime changeDate)
         {
             var issues = new List<Issue>();
-            var projectJql = project == Project.All ? "FSL, XHD, NCP, AMS-X" : project.ToString();
+            var projectJql = project == Project.All ? "FSL, XHD, FCL, NCP, AMS-X" : project.ToString();
             if (changeDate == null || changeDate.CompareTo(new DateTime()) == 0) changeDate = new DateTime(2019, 01, 01);
             var changeDateJql = changeDate.ToString("yyyy-MM-dd");
             int startAt = 0;
